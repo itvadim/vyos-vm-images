@@ -1,0 +1,23 @@
+- name: Check if sources.list exists
+  stat:
+    path: "{{ vyos_install_root }}/etc/apt/sources.list"
+  register: sources_list_stat
+
+- name: Backup sources.list if exists
+  command: mv {{ vyos_install_root }}/etc/apt/sources.list /tmp/sources.list
+  when: sources_list_stat.stat.exists
+
+- name: Check if resolv.conf exists
+  stat:
+    path: "{{ vyos_install_root }}/etc/resolv.conf"
+  register: resolv_conf_stat
+
+- name: Backup resolv.conf if exists
+  become: true
+  command: mv {{ vyos_install_root }}/etc/resolv.conf /tmp/resolv.conf
+
+- name: Add nameserver settings to chroot
+  become: true
+  copy:
+    src: "files/resolv.conf"
+    dest: "{{ vyos_install_root }}/etc/resolv.conf"

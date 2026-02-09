@@ -1,0 +1,19 @@
+- name: Check if backup resolv.conf exists
+  stat:
+    path: /tmp/resolv.conf
+  register: resolv_backup
+
+- name: Restore original resolv.conf
+  command: mv /tmp/resolv.conf {{ vyos_install_root }}/etc/resolv.conf
+  become: true
+  when: resolv_backup.stat.exists
+
+- name: Check if backup sources.list exists
+  stat:
+    path: /tmp/sources.list
+  register: sources_backup
+
+- name: Restore original sources.list
+  command: mv /tmp/sources.list {{ vyos_install_root }}/etc/apt/sources.list
+  become: true
+  when: sources_backup.stat.exists

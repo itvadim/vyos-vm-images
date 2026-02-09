@@ -1,0 +1,2 @@
+custom_deb_paths:
+  - patch-cloud-init

@@ -1,0 +1,3 @@
+---
+platform: "{{ vyos_platform | default('generic')"
+custom_debs_dir: /tmp/custom_debs

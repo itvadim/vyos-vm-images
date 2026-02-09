@@ -1,0 +1,33 @@
+- name: Check if custom deb directory exists
+  stat:
+    path: "{{ vyos_install_root }}/tmp/custom_debs"
+  register: custom_debs_dir_stat
+
+- name: Find deb packages
+  find:
+    paths: "{{ vyos_install_root }}/tmp/custom_debs"
+    patterns: "*.deb"
+    recurse: true
+  register: custom_debs_found
+  when: custom_debs_dir_stat.stat.exists
+
+- name: Run apt-get update
+  become: true
+  command: chroot {{ vyos_install_root }} apt-get update
+  when:
+    - custom_debs_dir_stat.stat.exists
+    - custom_debs_found.matched | default(0) | int > 0
+
+- name: Install custom packages from deb files
+  become: true
+  command: chroot {{ vyos_install_root }} dpkg -iR --force-depends /tmp/custom_debs/
+  when:
+    - custom_debs_dir_stat.stat.exists
+    - custom_debs_found.matched | default(0) | int > 0
+
+- name: Install missed dependencies
+  become: true
+  command: chroot {{ vyos_install_root }} apt-get -f -y install
+  when:
+    - custom_debs_dir_stat.stat.exists
+    - custom_debs_found.matched | default(0) | int > 0

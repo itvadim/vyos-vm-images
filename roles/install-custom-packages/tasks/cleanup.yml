@@ -1,0 +1,19 @@
+- name: Clean apt cache
+  become: true
+  command: chroot {{ vyos_install_root }} apt-get clean
+
+- name: Remove apt lists
+  become: true
+  command: chroot {{ vyos_install_root }} rm -rf /var/lib/apt/lists/
+
+- name: Remove temporary deb directory
+  become: true
+  file:
+    path: "{{ vyos_install_root }}{{ custom_debs_dir }}"
+    state: absent
+
+- name: Delete debian.list
+  become: true
+  file:
+    path: "{{ vyos_install_root }}/etc/apt/sources.list.d/debian.list"
+    state: absent

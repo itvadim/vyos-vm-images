@@ -6,7 +6,7 @@
   set_fact:
     ci_tag: "-cloud-init"
   when: cloud_init == "true"
-# - name: Set empty Cloud-Init tag for image file name
-#   set_fact:
-#     ci_tag: ""
-#   when: cloud_init == "false"
+- name: Set empty Cloud-Init tag for image file name
+  set_fact:
+    ci_tag: ""
+  when: cloud_init == "false"

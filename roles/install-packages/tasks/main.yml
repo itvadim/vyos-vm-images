@@ -1,23 +1,40 @@
-- name: Install required packages
-  become: true
-  apt:
-    update_cache: true
-    name:
+- name: Define common packages
+  set_fact:
+    common_packages:
       - gdisk
       - kpartx
       - dosfstools
       - e2fsprogs
       - gnupg
-      - qemu-utils
-      - python3-lxml
+      - rsync
+      - unzip
+      - squashfs-tools
+      - xorriso
+
+- name: Define Debian packages
+  set_fact:
+    distro_packages:
+      - zlib1g-dev
       - grub-efi-amd64
       - grub-efi-amd64-bin
       - grub-common
       - isolinux
-      - python3-requests
-      - rsync
-      - unzip
-      - zlib1g-dev
-      - squashfs-tools
-      - xorriso
+      - qemu-utils
+  when: ansible_os_family == "Debian"
+
+- name: Define RedHat packages
+  set_fact:
+    distro_packages:
+      - zlib-devel
+      - grub2-efi-x64
+      - grub2-common
+      - syslinux
+      - qemu-img
+  when: ansible_os_family == "RedHat"
+
+- name: Install required packages
+  become: true
+  package:
+    name: "{{ common_packages + distro_packages }}"
     state: present
+    update_cache: true

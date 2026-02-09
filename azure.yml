@@ -4,17 +4,18 @@
   gather_facts: true
   connection: local
   vars:
-    cloud_init: "false"
+    cloud_init: "true"
     cloud_init_ds_list: "{{ cloud_init_ds_string.split(',') }}"
-    cloud_init_ds_string: "{{ cloud_init_ds | default('NoCloud, ConfigDrive, None') }}"
+    cloud_init_ds_string: "{{ cloud_init_ds | default('NoCloud, Azure, None') }}"
     custom_packages: true
     disk_size: 2
     parttable_type: hybrid
-    vyos_format: vhdx
-    vyos_hyperv_img: /tmp/vyos_hyperv_image.vhdx
-    vyos_images_dir: /tmp/releases
+    vyos_format: vhd
+    vyos_hyperv_img: /tmp/vyos_azure_image.vhd
+    vyos_images_dir: /tmp
     vyos_output_img: "{{ vyos_hyperv_img }}"
-    vyos_platform: hyperv
+    vyos_platform: azure
+    without_login: true
   roles:
     - install-packages
     - mount-iso
@@ -24,12 +25,12 @@
     - install-image
     - mount-root-fs
     - install-config
-    - install-grub-wrapper
+    - install-grub
     - install-persistence-conf
     - install-cloud-init-wrapper
     - install-custom-packages-wrapper
     - unmount-pre
     - unmount-all
-    - hyperv-vhd
+    - azure-vhd
     - cleanup-ending
     - release

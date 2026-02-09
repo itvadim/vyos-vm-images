@@ -11,24 +11,27 @@
   template:
     src: "templates/debian.list.j2"
     dest: "{{ vyos_install_root }}/etc/apt/sources.list.d/debian.list"
-- name: backup resolv.conf
+- name: Backup resolv.conf
   become: true
   command: mv {{ vyos_install_root }}/etc/resolv.conf /tmp/resolv.conf
-- name: add nameserver settings to chroot
+- name: Backup sources.list
+  become: true
+  command: mv {{ vyos_install_root }}/etc/apt/sources.list /tmp/sources.list
+- name: Add nameserver settings to chroot
   become: true
   copy:
     src: "files/resolv.conf"
     dest: "{{ vyos_install_root }}/etc/resolv.conf"
-- name: apt-get update
+- name: Run apt-get update
   become: true
   command: chroot {{ vyos_install_root }} apt-get update
 - name: Install cloud-init
   become: true
-  command: chroot {{ vyos_install_root }} apt-get -t {{ vyos_branch | default('current') }} install -y --force-yes cloud-init cloud-utils ifupdown
-- name: apt-get clean
+  command: chroot {{ vyos_install_root }} apt-get install -y --force-yes cloud-init cloud-utils ifupdown
+- name: Run apt-get clean
   become: true
   command: chroot {{ vyos_install_root }} apt-get clean
-- name: delete apt lists from cache
+- name: Delete apt lists from cache
   become: true
   command: chroot {{ vyos_install_root }} rm -rf /var/lib/apt/lists/
 - name: Delete debian.list
@@ -47,7 +50,7 @@
   template:
     src: 90_dpkg.cfg.j2
     dest: "{{ vyos_install_root }}/etc/cloud/cloud.cfg.d/90_dpkg.cfg"
-- name: run dpkg-reconfigure cloud-init
+- name: Run dpkg-reconfigure cloud-init
   become: true
   command: chroot {{ vyos_install_root }} dpkg-reconfigure -f noninteractive cloud-init
 - name: Disable config-stage modules
@@ -64,6 +67,9 @@
     path: "{{ vyos_install_root }}/etc/network/interfaces"
     line: "source-directory /etc/network/interfaces.d"
     create: yes
-- name: restore original resolv.conf
+- name: Restore original resolv.conf
   become: true
   command: mv /tmp/resolv.conf {{ vyos_install_root }}/etc/resolv.conf
+- name: Restore sources.list
+  become: true
+  command: mv /tmp/sources.list {{ vyos_install_root }}/etc/apt/sources.list

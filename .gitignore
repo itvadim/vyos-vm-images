@@ -11,3 +11,6 @@
 
 # Python
 .python-version
+
+# JetBrains IDE
+.idea

@@ -68,7 +68,10 @@ git clone https://github.com/vyos/vyos-vm-images.git && cd vyos-vm-images
     ```
     ansible-playbook hyperv.yml
     ```
-
+- Microsoft Azure
+  ```shell
+  ansible-playbook azure.yml
+  ```
 - Vagrant libvirt
 
     ```

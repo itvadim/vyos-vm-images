@@ -1,0 +1,22 @@
+- name: Build list of deb directories to install
+  set_fact:
+    deb_install_dirs: >-
+      {{
+        custom_deb_paths
+        | reject('equalto', 'patch-cloud-init') | list
+        +
+        (cloud_init | bool | ternary(['patch-cloud-init'], []))
+      }}
+
+- name: Copy deb packages to chroot
+  become: true
+  copy:
+    src: "custom_debs/{{ item }}/"
+    dest: "{{ vyos_install_root }}{{ custom_debs_dir }}/{{ item }}/"
+  loop: "{{ deb_install_dirs }}"
+
+- name: Put debian.list
+  become: true
+  template:
+    src: "templates/debian.list.j2"
+    dest: "{{ vyos_install_root }}/etc/apt/sources.list.d/debian.list"

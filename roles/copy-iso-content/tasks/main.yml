@@ -1,4 +1,4 @@
-- name: copy iso files
+- name: Copy iso files
   become: true
   synchronize:
     src: "/mnt/cdrom/"

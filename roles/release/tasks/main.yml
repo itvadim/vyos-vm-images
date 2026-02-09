@@ -2,5 +2,5 @@
   become: false
   copy:
     src: "{{ vyos_output_img }}"
-    dest: "{{ vyos_images_dir }}/vyos-{{ vyos_version }}-{{ vyos_platform | lower }}.{{ vyos_format }}"
+    dest: "{{ vyos_images_dir }}/vyos-{{ vyos_version }}-{{ vyos_platform | lower }}{{ ci_tag }}.{{ vyos_format }}"
   when: vyos_images_dir is defined

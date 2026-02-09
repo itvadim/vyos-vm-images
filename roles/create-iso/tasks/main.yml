@@ -1,5 +1,5 @@
 ---
-- name: create new iso
+- name: Create new iso
   become: true
   command:  > 
     xorriso -as mkisofs -R -r -J -joliet-long -l -cache-inodes \
