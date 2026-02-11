@@ -1,4 +1,11 @@
 system {
+{% if grub_console is defined and grub_console == "serial" %}
+    console {
+        device ttyS0 {
+            speed 115200
+        }
+    }
+{% endif %}
     host-name vyos
 {% if without_login is not defined or without_login == "false" %}
     login {

@@ -9,6 +9,7 @@
     cloud_init_ds_string: "{{ cloud_init_ds | default('NoCloud, Azure, None') }}"
     custom_packages: true
     disk_size: 2
+    grub_console: serial
     parttable_type: hybrid
     vyos_format: vhd
     vyos_hyperv_img: /tmp/vyos_azure_image.vhd
